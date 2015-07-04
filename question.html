@@ -43,7 +43,7 @@
 <br>
 
 <div class="boxes">
-  <div class="media" ng-repeat="answer in question.answers">
+  <div class="media" ng-repeat="answer in answers">
     <div class="media-left">
       <a href="#">
         <img class="media-object" ng-src="{{answer.gravatarUrl}}">
@@ -51,8 +51,8 @@
     </div>
     <div class="media-body">
       <h4 class="media-heading">{{answer.email}} answered:</h4>
-      <div class="time hidden-xs">{{ question.createdAt | dateInWords }}</div>
-      <div>{{question.body}}</div>
+      <div class="time hidden-xs">{{ answer.createdAt | dateInWords }}</div>
+      <div>{{answer.body}}</div>
       <div class="hidden-xs"><a ui-sref="question({slug: question.slug})" class="btn btn-primary btn-xs">View Answers</a></div>
     </div>
   </div>

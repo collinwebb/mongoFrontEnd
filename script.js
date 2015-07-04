@@ -39,21 +39,37 @@ angular.module('Mongo', ['ui.router'])
     },
   };
 })
+.factory('Answer', function($http, ATN){
+  return {
+    getAll: function(slug){
+      $http.get(ATN.API_URL + 'questions/' + slug + '/answers');
+    },
+    addAnswer: function(answer, slug){
+      $http.post(ATN.API_URL + 'questions/' + slug + '/answers', answer);
+    },
+  };
+})
 .filter('dateInWords', ['$http', function(){
   return function(input){
     return moment(input).utc().fromNow();
   };
 }])
-.controller('QuestionCtrl', function($scope, Question, $state){
+.controller('QuestionCtrl', function($scope, Question, $state, Answer){
   $scope.slug = $state.params.slug;
+  $scope.answers = Answer.getAll($scope.slug);
 
   Question.getOne($state.params.slug)
-    .success(function(data) {
-      $scope.question = data;
-    }).catch(function(err) {
-      $state.go('404');
-      console.error(err);
-    });
+  .success(function(data) {
+    $scope.question = data;
+  }).catch(function(err) {
+    $state.go('404');
+    console.error(err);
+  });
+
+  $scope.addAnswer = function(){
+    Answer.addAnswer($scope.answer, $scope.slug);
+    $scope.answer = {};
+  };
 })
 .controller('MainCtrl', function($scope, $http, Question){
   Question.getAll().success(function(data){
