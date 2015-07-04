@@ -41,11 +41,8 @@ angular.module('Mongo', ['ui.router'])
 })
 .factory('Answer', function($http, ATN){
   return {
-    getAll: function(slug){
-      $http.get(ATN.API_URL + 'questions/' + slug + '/answers');
-    },
     addAnswer: function(answer, slug){
-      $http.post(ATN.API_URL + 'questions/' + slug + '/answers', answer);
+      return $http.post(ATN.API_URL + 'questions/' + slug + '/answers', answer);
     },
   };
 })
@@ -56,7 +53,6 @@ angular.module('Mongo', ['ui.router'])
 }])
 .controller('QuestionCtrl', function($scope, Question, $state, Answer){
   $scope.slug = $state.params.slug;
-  $scope.answers = Answer.getAll($scope.slug);
 
   Question.getOne($state.params.slug)
   .success(function(data) {
@@ -67,7 +63,12 @@ angular.module('Mongo', ['ui.router'])
   });
 
   $scope.addAnswer = function(){
-    Answer.addAnswer($scope.answer, $scope.slug);
+    Answer.addAnswer($scope.answer, $scope.slug)
+    .success(function(data){
+      $scope.question = data;
+    }).catch(function(err) {
+      console.error(err);
+    });
     $scope.answer = {};
   };
 })
